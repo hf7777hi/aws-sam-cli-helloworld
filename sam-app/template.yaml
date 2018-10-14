@@ -28,6 +28,12 @@ Resources:
                     Properties:
                         Path: /hello
                         Method: get
+                HelloWorldPost:
+                    Type: Api
+                    Properties:
+                        Path: /hello
+                        Method: post
+
 
 Outputs:
 
