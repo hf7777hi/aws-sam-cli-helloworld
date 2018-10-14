@@ -1,0 +1,29 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos72"
+  config.vm.network "public_network"
+  config.vm.synced_folder "../../aws-sam-cli-helloworld/", "/home/vagrant/dev/", create: true
+  config.vm.provider "virtualbox" do |vb|
+    # Customize the amount of memory on the VM:
+    vb.memory = "1024"
+  end
+
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+  config.vm.provision "shell", inline: <<-SHELL
+    timedatectl set-timezone Asia/Tokyo
+    yum install -y docker gcc gcc-c++ bzip2 bzip2-devel zlib-devel readline readline-devel sqlite sqlite-devel openssl openssl-devel git httpd
+    yum install -y java-1.8.0-openjdk.x86_64 java-1.8.0-openjdk-devel.x86_64
+    systemctl enable httpd
+    systemctl start httpd
+    groupadd docker
+    gpasswd -a vagrant docker
+    systemctl enable docker
+    systemctl start docker
+    cd /home/vagrant
+    sudo -u vagrant /home/vagrant/dev/centos72/setup.sh
+  SHELL
+end
